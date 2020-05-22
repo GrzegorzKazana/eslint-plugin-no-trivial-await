@@ -4,7 +4,8 @@
     "description": "ESLint plugin no-trivial-await",
     "main": "index.js",
     "scripts": {
-        "test": "mocha tests/**/*.js"
+        "test:rules": "mocha tests/lib/rules/*.js",
+        "test:utils": "mocha tests/lib/utils/*.js"
     },
     "keywords": [
         "eslint",

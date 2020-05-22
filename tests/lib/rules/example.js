@@ -26,17 +26,17 @@ const validFunctionBodies = [
 const invalidFunctionBodies = [
     `return await fetch();`,
     `const a = await fetch();
-   return a;`,
+     return a;`,
     `const a = await fetch();
-   cosnt b = await fetch();
-   return b;`,
+     cosnt b = await fetch();
+     return b;`,
     `const a = await fetch();
-   cosnt b = await fetch(a);
-   return b;`,
+     cosnt b = await fetch(a);
+     return b;`,
     `const a = await fetch();
-   const c = a + 1;
-   cosnt b = await fetch();
-   return b;`,
+     const c = a + 1;
+     cosnt b = await fetch();
+     return b;`,
 ];
 
 const createFunctionDeclarations = body => [
@@ -53,15 +53,9 @@ const createFunctionDeclarations = body => [
     }`,
 ];
 
-const validFunctionDeclarations = flatMap(
-    createFunctionDeclarations,
-    validFunctionBodies,
-);
-
-const invalidFunctionDeclarations = flatMap(
-    createFunctionDeclarations,
-    invalidFunctionBodies,
-);
+const createFnsWithBodies = flatMap(createFunctionDeclarations);
+const validFunctionDeclarations = createFnsWithBodies(validFunctionBodies);
+const invalidFunctionDeclarations = createFnsWithBodies(invalidFunctionBodies);
 
 ruleTester.run('noTrivialAwait', rule, {
     valid: validFunctionDeclarations.map(code => ({ code, parserOptions })),
