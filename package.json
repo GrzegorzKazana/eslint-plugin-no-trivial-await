@@ -1,0 +1,25 @@
+{
+    "name": "eslint-plugin-no-trivial-await",
+    "version": "0.0.0",
+    "description": "ESLint plugin no-trivial-await",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha tests/**/*.js"
+    },
+    "keywords": [
+        "eslint",
+        "eslint-plugin",
+        "eslintplugin"
+    ],
+    "license": "MIT",
+    "devDependencies": {
+        "eslint": "4.19.1",
+        "mocha": "5.0.5"
+    },
+    "peerDependencies": {
+        "eslint": "^2.0.0 || ^3.0.0 || ^4.0.0"
+    },
+    "engines": {
+        "node": ">=0.10"
+    }
+}
