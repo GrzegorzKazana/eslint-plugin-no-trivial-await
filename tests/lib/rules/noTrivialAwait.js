@@ -28,9 +28,9 @@ const validFunctionBodies = [
 ];
 
 const invalidFunctionBodies = [
-    // `return await fetch();`,
-    // `const a = await fetch();
-    //  return a;`,
+    `return await fetch();`,
+    `const a = await fetch();
+     return a;`,
     `const a = await fetch();
      const b = await fetch();
      return b;`,
@@ -62,7 +62,7 @@ const validFunctionDeclarations = createFnsWithBodies(validFunctionBodies);
 const invalidFunctionDeclarations = createFnsWithBodies(invalidFunctionBodies);
 
 ruleTester.run('noTrivialAwait', rule, {
-    valid: [], //validFunctionDeclarations.map(code => ({ code, parserOptions })),
+    valid: validFunctionDeclarations.map(code => ({ code, parserOptions })),
     invalid: invalidFunctionDeclarations.map(code => ({
         code,
         parserOptions,
