@@ -3,8 +3,8 @@ import assert from 'assert';
 import { flatMap } from '@/utils';
 
 describe('flatMap util', () => {
-    const negate = x => [-x];
-    const complement = x => [-x, x];
+    const negate = (x: number) => [-x];
+    const complement = (x: number) => [-x, x];
     const negateNumbers = flatMap(negate);
     const complementNumbers = flatMap(complement);
 
