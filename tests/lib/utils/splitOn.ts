@@ -1,6 +1,6 @@
-const assert = require('assert');
+import assert from 'assert';
 
-const { splitOn } = require('../../../lib/utils');
+import { splitOn } from '@/utils';
 
 describe('splitOn util', () => {
     const isNegative = x => x < 0;

@@ -4,8 +4,9 @@
     "description": "ESLint plugin no-trivial-await",
     "main": "index.js",
     "scripts": {
-        "test:rules": "mocha tests/lib/rules/*.js",
-        "test:utils": "mocha tests/lib/utils/*.js"
+        "test:rules": "ts-mocha --paths -p tsconfig.json tests/lib/rules/*.ts",
+        "test:utils": "ts-mocha --paths -p tsconfig.json tests/lib/utils/*.ts",
+        "build": "tsc -p tsconfig.build.json"
     },
     "keywords": [
         "eslint",
@@ -14,9 +15,16 @@
     ],
     "license": "MIT",
     "devDependencies": {
+        "@types/eslint": "^6.8.1",
+        "@types/esquery": "^1.0.1",
+        "@types/mocha": "^7.0.2",
+        "@types/node": "^14.0.5",
         "eslint": "4.19.1",
         "esquery": "^1.3.1",
-        "mocha": "5.0.5"
+        "mocha": "5.0.5",
+        "ts-mocha": "^7.0.0",
+        "ts-node": "^8.10.1",
+        "typescript": "^3.9.3"
     },
     "peerDependencies": {
         "eslint": "^2.0.0 || ^3.0.0 || ^4.0.0"

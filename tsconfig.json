@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "CommonJS",
+        "declaration": false,
+        "noImplicitAny": false,
+        "strict": false,
+        "strictNullChecks": false,
+        "outDir": "lib",
+        "sourceMap": false,
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "paths": {
+            "@/*": ["src/*"]
+        },
+        "moduleResolution": "node"
+    },
+    "include": ["src/**/*", "tests/**/*"],
+    "exclude": ["node_modules", "tsconfig.json"]
+}

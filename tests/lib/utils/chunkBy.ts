@@ -1,6 +1,6 @@
-const assert = require('assert');
+import assert from 'assert';
 
-const { chunkBy } = require('../../../lib/utils');
+import { chunkBy } from '@/utils';
 
 describe('chunkBy util', () => {
     const isNegative = x => x < 0;

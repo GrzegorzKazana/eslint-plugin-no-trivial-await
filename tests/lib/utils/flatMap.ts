@@ -1,6 +1,6 @@
-const assert = require('assert');
+import assert from 'assert';
 
-const { flatMap } = require('../../../lib/utils');
+import { flatMap } from '@/utils';
 
 describe('flatMap util', () => {
     const negate = x => [-x];

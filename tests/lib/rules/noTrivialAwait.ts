@@ -1,11 +1,10 @@
-'use strict';
+import { RuleTester } from 'eslint';
 
-const { flatMap } = require('../../../lib/utils');
-const rule = require('../../../lib/rules/noTrivialAwait');
-const RuleTester = require('eslint').RuleTester;
+import { flatMap } from '@/utils';
+import rule from '@/rules/noTrivialAwait';
 
 const ruleTester = new RuleTester();
-const parserOptions = { ecmaVersion: 8 };
+const parserOptions = { ecmaVersion: 8 } as const;
 const errors = [{ messageId: 'avoidTrivialAwait' }];
 
 const validFunctionBodies = [
