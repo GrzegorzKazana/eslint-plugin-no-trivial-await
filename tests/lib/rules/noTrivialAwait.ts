@@ -24,6 +24,17 @@ const validFunctionBodies = [
      const b = await fetch();
      const c = await fetch()
      return b + c`,
+    `const a = await fetch();
+     const b = a + 1
+     const c = await fetch();
+     const d = b + c;`,
+    `const a = await fetch();
+     await fetch();
+     return a;`,
+    `const a = await fetch();
+     const c = a + 1;
+     const b = await fetch();
+     return b;`,
 ];
 
 const invalidFunctionBodies = [
@@ -36,13 +47,9 @@ const invalidFunctionBodies = [
     `const a = await fetch();
      const b = await fetch(a);
      return b;`,
-    `const a = await fetch();
-     const c = a + 1;
-     const b = await fetch();
-     return b;`,
 ];
 
-const createFunctionDeclarations = body => [
+const createFunctionDeclarations = (body: string) => [
     `async () => {
       ${body}
     }`,
