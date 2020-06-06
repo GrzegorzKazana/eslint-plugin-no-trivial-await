@@ -22,3 +22,10 @@ export const head = <T>(arr: T[]): T | undefined => arr[0];
 
 export const or = <T>(predA: Predicate<T>, predB: Predicate<T>) => (a: T) =>
     predA(a) || predB(a);
+
+export const elem = <T>(arr: T[], idx: number): T | undefined => arr[idx];
+
+export const safeHeadAndTail = <T>([head, ...tail]: T[]): [
+    T | undefined,
+    T[],
+] => [head, tail];
