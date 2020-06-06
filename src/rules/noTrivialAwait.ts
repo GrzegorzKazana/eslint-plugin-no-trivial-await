@@ -1,60 +1,28 @@
-import type {
-    Node,
-    BlockStatement,
-    Statement,
-    VariableDeclarator,
-} from 'estree';
+import type { Node, BlockStatement, Statement, VariableDeclaration } from 'estree';
 import type { Rule } from 'eslint';
-import esquery from 'esquery';
-import { flatten, or, chunkBy } from '../utils';
 
-const isAsyncDeclarator = (node: VariableDeclarator) =>
-    esquery(node, 'AwaitExpression').length > 0;
+import { flatten, safeHeadAndTail } from '@/utils';
+import queries from '@/utils/queries';
+import guards from '@/utils/guards';
+import selectors from '@/utils/selectors';
 
-const isAsyncVariableDeclaration = (node: Statement) =>
-    node.type === 'VariableDeclaration' &&
-    node.declarations.some(isAsyncDeclarator);
+const isStatementUsingVariableOnlyInMostNestedAwait = (node: Node, variables: string[]) => {
+    const allVariableUses = queries.getVariableUses(node, variables).length;
+    const allVariableUsesInAwaitExpressions = queries.getVariableUsesInAwaitExpressions(
+        node,
+        variables,
+    ).length;
 
-const isExpressionStatementWithAwait = (node: Statement) =>
-    node.type === 'ExpressionStatement' &&
-    esquery(node.expression, 'AwaitExpression').length > 0;
-
-const isTopLevelAwaitStatement = or(
-    isAsyncVariableDeclaration,
-    isExpressionStatementWithAwait,
-);
-
-const chunkByTopLevelAwaitStatements = chunkBy(isTopLevelAwaitStatement);
-
-const getDeclaredAsyncVariables = (
-    context: Rule.RuleContext,
-    node: Node,
-): string[] => {
-    if (node.type !== 'VariableDeclaration') return [];
-
-    const asyncDeclarators = node.declarations.filter(isAsyncDeclarator);
-    const asyncVariables = asyncDeclarators.map(decl =>
-        context.getDeclaredVariables(decl),
+    const lowestLevelAwaitExpressions = queries.getLowestLevelAwaitExpressions(node);
+    const variableUsesInLowestAwaitExpressions = lowestLevelAwaitExpressions.reduce(
+        (count, awaitExpr) => count + queries.getVariableUses(awaitExpr, variables).length,
+        0,
     );
 
-    return flatten(asyncVariables).map(({ name }) => name);
-};
-
-const hasAnyAwaitExcludingReturnStatement = (node: Node) =>
-    esquery(node, 'AwaitExpression:not(ReturnStatement AwaitExpression)')
-        .length > 0;
-
-const isNotUsingVariablesExceptFirstAwaitedExpression = (
-    node: Node,
-    variables: string[],
-) => {
-    const variablesUnion = variables.join('|');
-    const isIdentifierInAwaitExpression = 'AwaitExpression Identifier';
-    const isIdentifierInFirstDeclaration = `VariableDeclaration:first-child ${isIdentifierInAwaitExpression}`;
-    const isIdentifierInFirstExpressionStatement = `ExpressionStatement:first-child ${isIdentifierInAwaitExpression}`;
-    const query = `Identifier[name=/${variablesUnion}/]:not(${isIdentifierInFirstDeclaration}):not(${isIdentifierInFirstExpressionStatement})`;
-
-    return esquery(node, query).length === 0;
+    return (
+        allVariableUses === allVariableUsesInAwaitExpressions &&
+        variableUsesInLowestAwaitExpressions === allVariableUsesInAwaitExpressions
+    );
 };
 
 const rule: Rule.RuleModule = {
@@ -64,58 +32,43 @@ const rule: Rule.RuleModule = {
         },
     },
     create: function (context) {
-        const isChunkTrivial = (
-            chunk: Statement[],
-            chunkIdx: number,
-            chunks: Statement[][],
+        const getDeclaredAsyncVariables = (node: VariableDeclaration) => {
+            const asyncDeclarators = node.declarations.filter(queries.hasAwait);
+            const asyncVariables = asyncDeclarators.map(decl => context.getDeclaredVariables(decl));
+
+            return flatten(asyncVariables).map(({ name }) => name);
+        };
+
+        const isTrivialStatement = (
+            currentStatement: Statement,
+            idx: number,
+            array: Statement[],
         ) => {
-            const [declarationOrExpressionWithAwait, ...restChunk] = chunk;
-            const restChunks = chunks.slice(chunkIdx + 1);
-            const statementsBegginingFromNextAwait: BlockStatement = {
-                type: 'BlockStatement',
-                body: flatten(restChunks),
-            };
+            const restBody = array.slice(idx + 1);
+            const [nextStatement, restStatements] = safeHeadAndTail(restBody);
 
-            const declaredAsyncVariables = getDeclaredAsyncVariables(
-                context,
-                declarationOrExpressionWithAwait,
+            if (!nextStatement || !guards.isVariableDeclaration(currentStatement)) return true;
+
+            const variables = getDeclaredAsyncVariables(currentStatement);
+
+            const isNextStatementInvalid = queries.hasAwait(nextStatement)
+                ? !isStatementUsingVariableOnlyInMostNestedAwait(nextStatement, variables)
+                : !guards.isReturnStatement(nextStatement) &&
+                  queries.isNodeUsingVariable(nextStatement, variables);
+
+            const isAnyRestStatementInvalid = restStatements.some(node =>
+                queries.isNodeUsingVariable(node, variables),
             );
 
-            const hasDeclaredAnyAsyncVariable =
-                declaredAsyncVariables.length > 0;
-
-            const isNotLastStatement =
-                statementsBegginingFromNextAwait.body.length !== 0 ||
-                restChunk.length !== 0;
-
-            return (
-                hasDeclaredAnyAsyncVariable &&
-                isNotLastStatement &&
-                isNotUsingVariablesExceptFirstAwaitedExpression(
-                    statementsBegginingFromNextAwait,
-                    declaredAsyncVariables,
-                )
-            );
+            return !isNextStatementInvalid && !isAnyRestStatementInvalid;
         };
 
         return {
-            ':function[async=true] BlockStatement': (node: Node) => {
+            [selectors.blockStatementOfAsyncFunction]: (node: Node) => {
                 // selector guarantees that node is a BlockStatement
                 const blockStatementNode = node as BlockStatement;
 
-                if (!hasAnyAwaitExcludingReturnStatement(node)) {
-                    context.report({ node, messageId: 'avoidTrivialAwait' });
-                }
-
-                const bodySplitByAwaitStatements = chunkByTopLevelAwaitStatements(
-                    blockStatementNode.body,
-                );
-
-                const areChunksTrivial = bodySplitByAwaitStatements.map(
-                    isChunkTrivial,
-                );
-
-                if (areChunksTrivial.every(Boolean)) {
+                if (blockStatementNode.body.every(isTrivialStatement)) {
                     context.report({ node, messageId: 'avoidTrivialAwait' });
                 }
             },
