@@ -53,14 +53,14 @@ const createFunctionDeclarations = (body: string) => [
     `async () => {
       ${body}
     }`,
-    // `async function fn() {
-    //   ${body}
-    // }`,
-    // `class A {
-    //   async fn() {
-    //     ${body}
-    //   }
-    // }`,
+    `async function fn() {
+      ${body}
+    }`,
+    `class A {
+      async fn() {
+        ${body}
+      }
+    }`,
 ];
 
 const createFnsWithBodies = flatMap(createFunctionDeclarations);
