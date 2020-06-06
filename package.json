@@ -6,6 +6,7 @@
     "scripts": {
         "test:rules": "ts-mocha --paths -p tsconfig.json tests/lib/rules/*.ts",
         "test:utils": "ts-mocha --paths -p tsconfig.json tests/lib/utils/*.ts",
+        "test": "ts-mocha --paths -p tsconfig.json tests/lib/**/*.ts",
         "build": "tsc -p tsconfig.build.json"
     },
     "keywords": [
