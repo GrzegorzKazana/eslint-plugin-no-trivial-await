@@ -7,6 +7,7 @@ import guards from '@/utils/guards';
 import selectors from '@/utils/selectors';
 
 const isStatementUsingVariableOnlyInMostNestedAwait = (node: Node, variables: string[]) => {
+    const allVariableUses = queries.getVariableUses(node, variables).length;
     const allVariableUsesInAwaitExpressions = queries.getVariableUsesInAwaitExpressions(
         node,
         variables,
@@ -18,7 +19,10 @@ const isStatementUsingVariableOnlyInMostNestedAwait = (node: Node, variables: st
         0,
     );
 
-    return variableUsesInLowestAwaitExpressions === allVariableUsesInAwaitExpressions;
+    return (
+        allVariableUses === allVariableUsesInAwaitExpressions &&
+        variableUsesInLowestAwaitExpressions === allVariableUsesInAwaitExpressions
+    );
 };
 
 const rule: Rule.RuleModule = {

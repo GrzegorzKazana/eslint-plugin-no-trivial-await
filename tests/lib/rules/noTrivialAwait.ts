@@ -35,6 +35,10 @@ const validFunctionBodies = [
      const c = a + 1;
      const b = await fetch();
      return b;`,
+    `const a = await fetch();
+     const b = a + await fetch();`,
+    `const a = await fetch();
+     const b = a + await fetch(a);`,
 ];
 
 const invalidFunctionBodies = [
