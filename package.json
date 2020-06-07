@@ -1,13 +1,18 @@
 {
-    "name": "eslint-plugin-no-trivial-await",
+    "name": "@grzegorzkazana/eslint-plugin-no-trivial-await",
     "version": "0.0.0",
     "description": "ESLint plugin no-trivial-await",
     "main": "index.js",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
     "scripts": {
         "test:rules": "ts-mocha --paths -p tsconfig.json tests/lib/rules/*.ts",
         "test:utils": "ts-mocha --paths -p tsconfig.json tests/lib/utils/*.ts",
         "test": "ts-mocha --paths -p tsconfig.json tests/lib/**/*.ts",
-        "build": "tsc -p tsconfig.build.json"
+        "build": "tsc -p tsconfig.build.json",
+        "prepublishOnly": "npm run build",
+        "version": "npm run build && git add lib"
     },
     "keywords": [
         "eslint",
