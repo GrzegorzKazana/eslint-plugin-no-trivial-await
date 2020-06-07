@@ -6,7 +6,7 @@ export enum NodeTypes {
     BlockStatement = 'BlockStatement',
 }
 
-const blockStatementOfAsyncFunction = `:function[async=true] ${NodeTypes.BlockStatement}`;
+const blockStatementOfAsyncFunction = `:function[async=true] > ${NodeTypes.BlockStatement}`;
 
 const lowestLevelAwaitExpressions = `${NodeTypes.AwaitExpression}:not(
     ${NodeTypes.AwaitExpression}:has(${NodeTypes.AwaitExpression} ${NodeTypes.AwaitExpression}))`;
