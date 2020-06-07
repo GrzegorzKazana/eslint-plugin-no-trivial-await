@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
 
-import { flatMap } from '@/utils';
-import rule from '@/rules/noTrivialAwait';
+import { flatMap } from '../../../src/utils';
+import rule from '../../../src/rules/noTrivialAwait';
 
 const ruleTester = new RuleTester();
 const parserOptions = { ecmaVersion: 8 } as const;

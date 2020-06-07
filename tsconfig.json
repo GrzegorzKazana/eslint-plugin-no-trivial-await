@@ -8,11 +8,7 @@
         "strictNullChecks": true,
         "outDir": "lib",
         "sourceMap": false,
-        "baseUrl": ".",
         "esModuleInterop": true,
-        "paths": {
-            "@/*": ["src/*"]
-        },
         "moduleResolution": "node"
     },
     "include": ["src/**/*", "tests/**/*"],

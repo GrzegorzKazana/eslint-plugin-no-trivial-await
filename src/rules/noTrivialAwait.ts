@@ -1,10 +1,10 @@
 import type { Node, BlockStatement, Statement, VariableDeclaration } from 'estree';
 import type { Rule } from 'eslint';
 
-import { flatten, safeHeadAndTail } from '@/utils';
-import queries from '@/utils/queries';
-import guards from '@/utils/guards';
-import selectors from '@/utils/selectors';
+import { flatten, safeHeadAndTail } from '../utils';
+import queries from '../utils/queries';
+import guards from '../utils/guards';
+import selectors from '../utils/selectors';
 
 const isStatementUsingVariableOnlyInMostNestedAwait = (node: Node, variables: string[]) => {
     const allVariableUses = queries.getVariableUses(node, variables).length;

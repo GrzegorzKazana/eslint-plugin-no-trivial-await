@@ -7,9 +7,9 @@
         "registry": "https://npm.pkg.github.com/"
     },
     "scripts": {
-        "test:rules": "ts-mocha --paths -p tsconfig.json tests/lib/rules/*.ts",
-        "test:utils": "ts-mocha --paths -p tsconfig.json tests/lib/utils/*.ts",
-        "test": "ts-mocha --paths -p tsconfig.json tests/lib/**/*.ts",
+        "test:rules": "ts-mocha -p tsconfig.json tests/lib/rules/*.ts",
+        "test:utils": "ts-mocha -p tsconfig.json tests/lib/utils/*.ts",
+        "test": "ts-mocha -p tsconfig.json tests/lib/**/*.ts",
         "build": "tsc -p tsconfig.build.json",
         "prepublishOnly": "npm run build",
         "version": "npm run build && git add lib"

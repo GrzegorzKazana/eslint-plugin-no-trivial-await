@@ -1,5 +1,5 @@
 module.exports = {
     rules: {
-        example: require('./lib/rules/example'),
+        noTrivialAwait: require('./lib/rules/noTrivialAwait'),
     },
 };

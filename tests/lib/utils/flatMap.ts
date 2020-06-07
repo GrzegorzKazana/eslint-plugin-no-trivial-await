@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { flatMap } from '@/utils';
+import { flatMap } from '../../../src/utils';
 
 describe('flatMap util', () => {
     const negate = (x: number) => [-x];
