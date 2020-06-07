@@ -1,6 +1,6 @@
 {
     "name": "@grzegorzkazana/eslint-plugin-no-trivial-await",
-    "version": "0.1.0-alpha.2",
+    "version": "0.1.0-alpha.3",
     "description": "ESLint plugin no-trivial-await",
     "main": "index.js",
     "publishConfig": {
